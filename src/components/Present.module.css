@@ -1,0 +1,37 @@
+.div {
+  display: flex;
+  flex-direction: column;
+}
+.one {
+  display: flex;
+  flex-wrap: wrap;
+  position: fixed;
+  top: 10px;
+  left: 400px;
+  width: 1070px;
+  height: 642px;
+  border-style:solid ;
+  border-width:7px;
+  overflow: hidden;
+}
+.img {
+  width: 200px;
+  height: 200px;
+  border-style:solid ;
+  border-width:7px;
+
+  transform: translateY(0px);
+}
+
+.bot {
+  position: fixed;
+  top: 700px;
+  left: 600px;
+  padding-right: 10px;
+
+}
+.score {
+  display: flex;
+  padding-top: 100px;
+  justify-content: flex-start;
+}

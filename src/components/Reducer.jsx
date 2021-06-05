@@ -6,15 +6,17 @@ const BOOL = "BOOL";
 
 const CHANGE_TIMER = "CHANGE TIMER";
 
+const initialSlot = {
+            change:0,
+            start:0,
+            end:0
+          };
+
 const initialState = {
   score:110,
   lines:1,
   time:0,
-  change1:0,
-  change2:0,
-  change3:0,
-  change4:0,
-  change5:0,
+  slots: [{...initialSlot},{...initialSlot},{...initialSlot},{...initialSlot},{...initialSlot}],
   runTimer:false,
   iterator:334,
   table : [0,1,2,3,4,5,6,7,8,0,1,2],
@@ -41,6 +43,15 @@ const rnd = (table) => {
 }
 
 
+//------------------------------------------------------------------------------
+const newPossition = (number) => {
+  let rotation = 1926;
+  let newNumber = Math.floor(Math.random() * 9);
+  number = ((number * -1) / 214) % 9;
+  alert([newNumber,number]);
+  rotation += (newNumber - number) * 214;
+  return rotation * -1;
+}
 //------------------------------------------------------------------------------
 
 
@@ -113,6 +124,7 @@ const Reducer = (state = initialState,action) => {
 //------------------------------------------------------------------------------
     case CHANGE_TIMER:
       {
+        let newSlots = state.slots;
         let lines = state.lines;
         let table = [...state.table];
         let table1 = [...state.table1];
@@ -120,57 +132,46 @@ const Reducer = (state = initialState,action) => {
         let table3 = [...state.table3];
         let table4 = [...state.table4];
         let newScore = state.score;
-
-        let newChange1 = state.change1;
-        let newChange2 = state.change2;
-        let newChange3 = state.change3;
-        let newChange4 = state.change4;
-        let newChange5 = state.change5;
-        let newChange11 = Math.floor(Math.random() * 12);
-        let newChange22 = Math.floor(Math.random() * 12);
-        let newChange33 = Math.floor(Math.random() * 12);
-        let newChange44 = Math.floor(Math.random() * 12);
-        let newChange55 = Math.floor(Math.random() * 12);
-        let newIterator = state.iterator;
         let newRunTimer = state.runTimer;
+
+
         let newTime = state.time;
 
-        
-        if (newTime >= 0 && newTime <= 213) {
-          newChange1 -= 10
+        let i = 0
+        while (i < 5) {
+          if (newTime >= 0 + (i*25) && newTime <= 100 + (i*25)) {
+            let floatTime = (newTime - i*25) / 100;
+            newSlots[i].change = (newSlots[i].start * (1.0-floatTime)) + (newSlots[i].end * floatTime);
+          }
+          i++;
         }
-        if (newTime >= 30 && newTime <= 243) {
-          newChange2 -= 10
-        }
-        if (newTime >= 60 && newTime <= 273) {
-          newChange3 -= 10
-        }
-        if (newTime >= 90 && newTime <= 303) {
-          newChange4 -= 10
-        }
-        if (newTime >= 120 && newTime <= 333) {
-          newChange5 -= 10
-        }
-        newIterator -= 1;
-        newTime += 1;
-        if(newIterator <= 0){
-          newRunTimer = false;
-          newIterator = 334;
-          newTime = 0;
 
+
+        newTime += 1;
+        if(newTime == 201){
+          newRunTimer = false;
+          newTime = 0;
 
           newScore = checkAll(table,table1,table2,table3,table4,newScore,lines);
         }
-        return {...state,change1:newChange1,change2:newChange2,change3:newChange3,change4:newChange4,change5:newChange5,
-          runTimer:newRunTimer,iterator:newIterator, time:newTime,score:newScore,};
+        return {...state, time:newTime,score:newScore,runTimer:newRunTimer};
       }
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
     case BOOL:
       {
+        let newSlots = state.slots;
         let newRunTimer = state.runTimer;
         newRunTimer = !newRunTimer;
-        return {...state,runTimer:newRunTimer};
+
+        let i = 0;
+        while (i < 5) {
+          newSlots[i].start = newSlots[i].change;
+          newSlots[i].end = newPossition(newSlots[i].change) + newSlots[i].change;
+          i++;
+        }
+
+        return {...state,runTimer:newRunTimer, slots:newSlots};
       }
 //------------------------------------------------------------------------------
     case LINE:

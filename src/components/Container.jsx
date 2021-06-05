@@ -11,11 +11,11 @@ const mapStateToProps = (state) => {
         newTable3: state.combine.newTable3,
         newTable4: state.combine.newTable4,
         score: state.combine.score,
-        change1: state.combine.change1,
-        change2: state.combine.change2,
-        change3: state.combine.change3,
-        change4: state.combine.change4,
-        change5: state.combine.change5,
+        change1: state.combine.slots[0].change,
+        change2: state.combine.slots[1].change,
+        change3: state.combine.slots[2].change,
+        change4: state.combine.slots[3].change,
+        change5: state.combine.slots[4].change,
         runTimer: state.combine.runTimer,
         time: state.combine.time
     }

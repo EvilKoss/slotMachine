@@ -1,4 +1,3 @@
-const ROLL = "ROLL";
 
 const LINE = "LINE";
 
@@ -25,11 +24,7 @@ const initialState = {
   table3 : [3,7,2,6,1,5,0,4,8,3,7,2],
   table4 : [4,0,5,1,6,2,7,3,8,4,0,5],
 
-  newTable : [0,1,2,3,4,5,6,7,8,0,1,2],
-  newTable1 : [1,3,5,7,0,2,4,6,8,1,3,5],
-  newTable2 : [2,5,8,1,4,7,0,3,6,2,5,8],
-  newTable3 : [3,7,2,6,1,5,0,4,8,3,7,2],
-  newTable4 : [4,0,5,1,6,2,7,3,8,4,0,5]
+  checkTable: [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]
 }
 //------------------------------------------------------------------------------
 const rnd = (table) => {
@@ -42,15 +37,30 @@ const rnd = (table) => {
   return newTable;
 }
 
-
 //------------------------------------------------------------------------------
-const newPossition = (number) => {
+const numbToName = (numb) => {
+  let pictuter = ['bar','bell','chery','diamound','grapes','orange','seven','star','watermelon'];
+  return pictuter[numb];
+}
+//------------------------------------------------------------------------------
+const newPossition = (number,checkTable,i) => {
+  let newTable = [
+    [0,1,2,3,4,5,6,7,8,0,1,2],
+    [1,3,5,7,0,2,4,6,8,1,3,5],
+    [2,5,8,1,4,7,0,3,6,2,5,8],
+    [3,7,2,6,1,5,0,4,8,3,7,2],
+    [4,0,5,1,6,2,7,3,8,4,0,5]
+  ]
   let rotation = 1926;
+  let newCheckTable = checkTable;
   let newNumber = Math.floor(Math.random() * 9);
   number = ((number * -1) / 214) % 9;
-  alert([newNumber,number]);
+  newCheckTable[i][0] = newTable[i][newNumber];
+  newCheckTable[i][1] = newTable[i][newNumber + 1];
+  newCheckTable[i][2] = newTable[i][newNumber + 2];
+
   rotation += (newNumber - number) * 214;
-  return rotation * -1;
+  return [rotation * -1,newCheckTable];
 }
 //------------------------------------------------------------------------------
 
@@ -100,27 +110,6 @@ const checkAll = (t,t1,t2,t3,t4,s,l) => {
 //------------------------------------------------------------------------------
 const Reducer = (state = initialState,action) => {
   switch (action.type) {
-    case ROLL:
-      {
-        let lines = state.lines;
-        let table = [...state.table];
-        let table1 = [...state.table1];
-        let table2 = [...state.table2];
-        let table3 = [...state.table3];
-        let table4 = [...state.table4];
-        let newScore = state.score;
-
-        let newTable = rnd(table);
-        let newTable1 = rnd(table1);
-        let newTable2 = rnd(table2);
-        let newTable3 = rnd(table3);
-        let newTable4 = rnd(table4);
-
-
-        newScore = checkAll(newTable,newTable1,newTable2,newTable3,newTable4,newScore,lines);
-
-        return {...state,score:newScore,newTable:newTable,newTable1:newTable1,newTable2:newTable2,newTable3:newTable3,newTable4:newTable4};
-      }
 //------------------------------------------------------------------------------
     case CHANGE_TIMER:
       {
@@ -131,6 +120,7 @@ const Reducer = (state = initialState,action) => {
         let table2 = [...state.table2];
         let table3 = [...state.table3];
         let table4 = [...state.table4];
+        let checkTable = [...state.checkTable]
         let newScore = state.score;
         let newRunTimer = state.runTimer;
 
@@ -151,8 +141,9 @@ const Reducer = (state = initialState,action) => {
         if(newTime == 201){
           newRunTimer = false;
           newTime = 0;
-
-          newScore = checkAll(table,table1,table2,table3,table4,newScore,lines);
+          //alert('da');
+          //newScore = checkAll(table,table1,table2,table3,table4,newScore,lines);
+          newScore = checkAll(checkTable[0],checkTable[1],checkTable[2],checkTable[3],checkTable[4],newScore,lines);
         }
         return {...state, time:newTime,score:newScore,runTimer:newRunTimer};
       }
@@ -161,17 +152,23 @@ const Reducer = (state = initialState,action) => {
     case BOOL:
       {
         let newSlots = state.slots;
+        let newScore = state.score;
         let newRunTimer = state.runTimer;
+        let newCheckTable = state.checkTable;
         newRunTimer = !newRunTimer;
 
         let i = 0;
         while (i < 5) {
           newSlots[i].start = newSlots[i].change;
-          newSlots[i].end = newPossition(newSlots[i].change) + newSlots[i].change;
+          let newI = newPossition(newSlots[i].change,newCheckTable,i);
+          newSlots[i].end = newI[0] + newSlots[i].change;
           i++;
+          // if (i == 5) {
+          //     newScore = checkAll(newTable,newTable1,newTable2,newTable3,newTable4,newScore,lines);
+          // }
         }
 
-        return {...state,runTimer:newRunTimer, slots:newSlots};
+        return {...state,runTimer:newRunTimer, slots:newSlots,checkTable:newCheckTable};
       }
 //------------------------------------------------------------------------------
     case LINE:
@@ -184,7 +181,6 @@ const Reducer = (state = initialState,action) => {
           }
       }
 //------------------------------------------------------------------------------
-export const roll = () => ({type:ROLL});
 
 export const bool = () => ({type:BOOL});
 

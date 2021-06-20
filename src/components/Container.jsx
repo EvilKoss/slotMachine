@@ -1,15 +1,15 @@
 import Present from './Present';
 import Reducer from './Reducer';
 import {connect} from 'react-redux';
-import {roll,line,changeTimer,bool,runTimer} from './Reducer';
+import {line,changeTimer,bool,runTimer} from './Reducer';
 
 const mapStateToProps = (state) => {
     return{
-        newTable: state.combine.newTable,
-        newTable1: state.combine.newTable1,
-        newTable2: state.combine.newTable2,
-        newTable3: state.combine.newTable3,
-        newTable4: state.combine.newTable4,
+        table: state.combine.table,
+        table1: state.combine.table1,
+        table2: state.combine.table2,
+        table3: state.combine.table3,
+        table4: state.combine.table4,
         score: state.combine.score,
         change1: state.combine.slots[0].change,
         change2: state.combine.slots[1].change,
@@ -22,7 +22,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    roll,line,changeTimer,bool
+    line,changeTimer,bool
 }
 
 const Container = connect(mapStateToProps,mapDispatchToProps)(Present);

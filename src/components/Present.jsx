@@ -19,11 +19,11 @@ import watermelon from './pictures/watermelon.bmp';
 
 const Present = (props) => {
   let pictuter = [bar,bell,chery,diamound,grapes,orange,seven,star,watermelon];
-  let newTable = props.newTable;
-  let newTable1 = props.newTable1;
-  let newTable2 = props.newTable2;
-  let newTable3 = props.newTable3;
-  let newTable4 = props.newTable4;
+  let newTable = props.table;
+  let newTable1 = props.table1;
+  let newTable2 = props.table2;
+  let newTable3 = props.table3;
+  let newTable4 = props.table4;
   let time = props.time;
   let score = props.score;
   let roll = props.bool;
